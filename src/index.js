@@ -64,23 +64,23 @@ class Game extends React.Component {
           this.setState({ log: "I am not jumping over" });
         } break;
       case "▲":
-          if ((newY = parseInt(this.state.Y) + 1) < 5) {
-            this.setState({ Y: newY }, () => { this.moveRobot() });
-          } else {
-            this.setState({ log: "Does not compute" });
-          } break;
+        if ((newY = parseInt(this.state.Y) + 1) < 5) {
+          this.setState({ Y: newY }, () => { this.moveRobot() });
+        } else {
+          this.setState({ log: "Does not compute" });
+        } break;
       case "▼":
-          if ((newY = parseInt(this.state.Y) - 1) >= 0) {
-            this.setState({ Y: newY }, () => { this.moveRobot() });
-          } else {
-            this.setState({ log: "I am not that type of robot" });
-          } break;
+        if ((newY = parseInt(this.state.Y) - 1) >= 0) {
+          this.setState({ Y: newY }, () => { this.moveRobot() });
+        } else {
+          this.setState({ log: "I am not that type of robot" });
+        } break;
       case "◄":
-          if ((newX = parseInt(this.state.X) - 1) >= 0) {
-            this.setState({ X: newX }, () => { this.moveRobot() });
-          } else {
-            this.setState({ log: "I want to live" });
-          } break;
+        if ((newX = parseInt(this.state.X) - 1) >= 0) {
+          this.setState({ X: newX }, () => { this.moveRobot() });
+        } else {
+          this.setState({ log: "I want to live" });
+        } break;
         default:
     }
   }
@@ -134,20 +134,11 @@ class Game extends React.Component {
   }
 
   validateMove() {
-    if (
-      this.state.X <= 4 &&
-      this.state.X >= 0 &&
-      this.state.Y <= 4 &&
-      this.state.Y >= 0
-    ) {
-      this.setState({
-        log: "Robot likes where he is"
-      });
+    if ( this.state.X <= 4 && this.state.X >= 0 && this.state.Y <= 4 && this.state.Y >= 0 ) {
+      this.setState({ log: "Robot likes where he is" });
       return true;
     } else {
-      this.setState({
-        log: "What are you trying to do with the robot, btw I'm ignoring you."
-      });
+      this.setState({ log: "What are you trying to do with the robot, btw I'm ignoring you." });
       return false;
     }
   }
