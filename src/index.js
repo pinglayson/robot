@@ -18,8 +18,9 @@ class Game extends React.Component {
       direction: "►",
       robotSet: false,
       log: "",
-      validX: "",
-      validY: ""
+      validX: 0,
+      validY: 0,
+      validDirection: "►"
     };
     this.handleChangeX = this.handleChangeX.bind(this);
     this.handleChangeY = this.handleChangeY.bind(this);
@@ -40,7 +41,7 @@ class Game extends React.Component {
     this.setState({ Y: event.target.value });
   }
   handleChangeFacing(event) {
-    this.setState({ direction: event.target.value });
+    this.setState({ direction: event.target.value, validDirection: event.target.value });
   }
 
   handlePlace() {
@@ -54,28 +55,29 @@ class Game extends React.Component {
     }
     let newX;
     let newY;
-    switch (this.state.direction) {
+    switch (this.state.validDirection) {
+      
       case "►":
-        if ((newX = parseInt(this.state.X) + 1) < 5) {
-          this.setState({ X: newX }, () => { this.moveRobot() });
+        if ((newX = parseInt(this.state.validX) + 1) < 5) {
+          this.setState({ X: newX, validX: newX }, () => { this.moveRobot() });
         } else {
           this.setState({ log: "I am not jumping over" });
         } break;
       case "▲":
-        if ((newY = parseInt(this.state.Y) + 1) < 5) {
-          this.setState({ Y: newY }, () => { this.moveRobot() });
+        if ((newY = parseInt(this.state.validY) + 1) < 5) {
+          this.setState({ Y: newY, validY: newY }, () => { this.moveRobot() });
         } else {
           this.setState({ log: "Please don't make me jump there" });
         } break;
       case "▼":
-        if ((newY = parseInt(this.state.Y) - 1) >= 0) {
-          this.setState({ Y: newY }, () => { this.moveRobot() });
+        if ((newY = parseInt(this.state.validY) - 1) >= 0) {
+          this.setState({ Y: newY, validY: newY }, () => { this.moveRobot() });
         } else {
           this.setState({ log: "I am not that type of robot" });
         } break;
       case "◄":
-        if ((newX = parseInt(this.state.X) - 1) >= 0) {
-          this.setState({ X: newX }, () => { this.moveRobot() });
+        if ((newX = parseInt(this.state.validX) - 1) >= 0) {
+          this.setState({ X: newX, validX: newX }, () => { this.moveRobot() });
         } else {
           this.setState({ log: "I want to live" });
         } break;
@@ -87,19 +89,19 @@ class Game extends React.Component {
       return false;
     }
     if(event.target.value==="LEFT"){
-      switch(this.state.direction){
-        case "►": this.setState({ direction: "▲" },() => {this.moveRobot() });break;
-        case "▲": this.setState({ direction: "◄" },() => {this.moveRobot() });break;
-        case "◄": this.setState({ direction: "▼" },() => {this.moveRobot() });break;
-        case "▼": this.setState({ direction: "►" },() => {this.moveRobot() });break;
+      switch(this.state.validDirection){
+        case "►": this.setState({ direction: "▲", validDirection: "▲" },() => {this.moveRobot() });break;
+        case "▲": this.setState({ direction: "◄", validDirection: "◄" },() => {this.moveRobot() });break;
+        case "◄": this.setState({ direction: "▼", validDirection: "▼" },() => {this.moveRobot() });break;
+        case "▼": this.setState({ direction: "►", validDirection: "►" },() => {this.moveRobot() });break;
         default:
       }
     } else if(event.target.value==="RIGHT") {
       switch(this.state.direction){
-        case "►": this.setState({ direction: "▼" },() => {this.moveRobot() });break;
-        case "▲": this.setState({ direction: "►" },() => {this.moveRobot() });break;
-        case "◄": this.setState({ direction: "▲" },() => {this.moveRobot() });break;
-        case "▼": this.setState({ direction: "◄" },() => {this.moveRobot() });break;
+        case "►": this.setState({ direction: "▼", validDirection: "▼"  },() => {this.moveRobot() });break;
+        case "▲": this.setState({ direction: "►", validDirection: "►"  },() => {this.moveRobot() });break;
+        case "◄": this.setState({ direction: "▲", validDirection: "▲"  },() => {this.moveRobot() });break;
+        case "▼": this.setState({ direction: "◄", validDirection: "◄"  },() => {this.moveRobot() });break;
         default:
       }
     }
@@ -108,7 +110,7 @@ class Game extends React.Component {
     if (!this.state.robotSet) {
       return false;
     }
-    this.setState(prevState => ({ log: prevState.X+","+prevState.Y+","+this.directionMaping[prevState.direction]}));
+    this.setState(prevState => ({ log: prevState.validX+","+prevState.validY+","+this.directionMaping[prevState.validDirection]}));
   }
 
   convertIndex(X, Y) {
@@ -119,8 +121,8 @@ class Game extends React.Component {
     if(!this.validateMove()){
       return false;
     }
-
-    const convertIndex = this.convertIndex(this.state.X, this.state.Y);
+    console.log(this.state.validX)
+    const convertIndex = this.convertIndex(this.state.validX, this.state.validY);
     const squares = Array(25).fill(null);
     squares[convertIndex] = this.state.direction;
     this.setState({ squares: squares });
@@ -128,7 +130,11 @@ class Game extends React.Component {
 
   placeRobot() {
     if (this.validateMove()) {
-      this.moveRobot();
+      this.setState(prevState => {
+        return {
+          validX: prevState.X, validY: prevState.Y, validateMove: prevState.direction
+        }
+      }, () => this.moveRobot());
       return true;
     } else {
       return false;
@@ -136,8 +142,9 @@ class Game extends React.Component {
   }
 
   validateMove() {
-    if ( this.state.X <= 4 && this.state.X >= 0 && this.state.Y <= 4 && this.state.Y >= 0 ) {
-      this.setState(prevState => ({ validX: prevState.X, validY: prevState.Y }));
+    if ( this.state.X <= 4 && this.state.X >= 0 && this.state.Y <= 4 && this.state.Y >= 0 && this.state.Y !== "" && this.state.X !== "" ) {
+      // this.setState(prevState => ({ validX: prevState.X, validY: prevState.Y, validateMove: prevState.direction  }));
+      console.log(this.state.validX);
       this.setState({ log: "Robot likes where he is" });
       return true;
     } else {
