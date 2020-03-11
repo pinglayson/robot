@@ -44,12 +44,8 @@ class Game extends React.Component {
   }
 
   handlePlace() {
-    if (!this.state.robotSet) {
-      if (this.placeRobot()) {
-        this.setState({ robotSet: true });
-      }
-    } else {
-      this.validateMove();
+    if (this.placeRobot()) {
+      this.setState({ robotSet: true });
     }
   }
   handleMove() {
