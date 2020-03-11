@@ -42,10 +42,16 @@ body {
   
   .game {
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
   }
   .game-info {
-    margin-left: 20px;
+    /* margin-left: 20px; */
+  }
+  input {
+    width: 40px;
+  }
+  .game-board {
+    margin-bottom: 1rem;
   }
   
   .button-container {
