@@ -41,7 +41,7 @@ class Game extends React.Component {
     this.setState({ Y: event.target.value });
   }
   handleChangeFacing(event) {
-    this.setState({ direction: event.target.value, validDirection: event.target.value });
+    this.setState({ direction: event.target.value });
   }
 
   handlePlace() {
@@ -124,7 +124,7 @@ class Game extends React.Component {
     console.log(this.state.validX)
     const convertIndex = this.convertIndex(this.state.validX, this.state.validY);
     const squares = Array(25).fill(null);
-    squares[convertIndex] = this.state.direction;
+    squares[convertIndex] = this.state.validDirection;
     this.setState({ squares: squares });
   }
 
@@ -132,7 +132,7 @@ class Game extends React.Component {
     if (this.validateMove()) {
       this.setState(prevState => {
         return {
-          validX: prevState.X, validY: prevState.Y, validateMove: prevState.direction
+          validX: prevState.X, validY: prevState.Y, validDirection: prevState.direction
         }
       }, () => this.moveRobot());
       return true;
