@@ -17,7 +17,9 @@ class Game extends React.Component {
       Y: 0,
       direction: "►",
       robotSet: false,
-      log: ""
+      log: "",
+      validX: "",
+      validY: ""
     };
     this.handleChangeX = this.handleChangeX.bind(this);
     this.handleChangeY = this.handleChangeY.bind(this);
@@ -47,7 +49,7 @@ class Game extends React.Component {
         this.setState({ robotSet: true });
       }
     } else {
-      this.setState({ log: "Robot is already set" });
+      this.validateMove();
     }
   }
   handleMove() {
@@ -67,7 +69,7 @@ class Game extends React.Component {
         if ((newY = parseInt(this.state.Y) + 1) < 5) {
           this.setState({ Y: newY }, () => { this.moveRobot() });
         } else {
-          this.setState({ log: "Does not compute" });
+          this.setState({ log: "Please don't make me jump there" });
         } break;
       case "▼":
         if ((newY = parseInt(this.state.Y) - 1) >= 0) {
@@ -118,7 +120,12 @@ class Game extends React.Component {
   }
 
   moveRobot() {
+    if(!this.validateMove()){
+      return false;
+    }
+
     const convertIndex = this.convertIndex(this.state.X, this.state.Y);
+    console.log(convertIndex);
     const squares = Array(25).fill(null);
     squares[convertIndex] = this.state.direction;
     this.setState({ squares: squares });
@@ -135,9 +142,11 @@ class Game extends React.Component {
 
   validateMove() {
     if ( this.state.X <= 4 && this.state.X >= 0 && this.state.Y <= 4 && this.state.Y >= 0 ) {
+      this.setState(prevState => ({ validX: prevState.X, validY: prevState.Y }));
       this.setState({ log: "Robot likes where he is" });
       return true;
     } else {
+      this.setState(prevState => ({ X: prevState.validX, Y: prevState.validY }));
       this.setState({ log: "What are you trying to do with the robot, btw I'm ignoring you." });
       return false;
     }
