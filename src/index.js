@@ -121,7 +121,6 @@ class Game extends React.Component {
     }
 
     const convertIndex = this.convertIndex(this.state.X, this.state.Y);
-    console.log(convertIndex);
     const squares = Array(25).fill(null);
     squares[convertIndex] = this.state.direction;
     this.setState({ squares: squares });
